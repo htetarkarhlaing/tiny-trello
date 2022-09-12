@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider       = "prisma-client-js"
+  previewFeature = ["mongodb"]
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+  outputName = "tiny-trello.dbml"
+  projectName = "Tiny Trello"
+  projectDatabaseType = "mongodb"
+  projectNote = "This is my next level 10 days challenge LOL"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model List {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+}

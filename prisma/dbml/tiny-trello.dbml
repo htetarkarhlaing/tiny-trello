@@ -1,0 +1,14 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Project "Tiny Trello" {
+  database_type: 'mongodb'
+  Note: 'This is my next level 10 days challenge LOL'
+}
+
+Table List {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+}
