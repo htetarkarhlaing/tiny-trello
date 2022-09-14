@@ -7,8 +7,111 @@ Project "Tiny Trello" {
   Note: 'This is my next level 10 days challenge LOL'
 }
 
-Table List {
+Table User {
+  id String [pk]
+  firstName String [not null]
+  lastName String [not null]
+  username String [not null]
+  email String [not null]
+  phone String [not null]
+  password String [not null]
+  dateOfBirth DateTime [not null]
+  token String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Gender Gender
+  genderId String
+  Timezone Timezone
+  timezoneId String
+  Session Session [not null]
+}
+
+Table Gender {
+  id String [pk]
+  name String [not null]
+  value String [not null]
+  Description String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  User User [not null]
+}
+
+Table Timezone {
+  id String [pk]
+  name String [not null]
+  timezone String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  User User [not null]
+}
+
+Table Session {
+  id String [pk]
+  User User [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Dialog Dialog [not null]
+  MoodRecord MoodRecord [not null]
+}
+
+Table Dialog {
   id String [pk]
   title String [not null]
   description String [not null]
+  Session Session [not null]
+  sessionId String [not null]
+  Symbol File
+  symbolId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
+
+Table Mood {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+  Symbol File
+  symbolId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  MoodRecord MoodRecord [not null]
+}
+
+Table MoodRecord {
+  id String [pk]
+  Session Session [not null]
+  sessionId String [not null]
+  Mood Mood [not null]
+  moodId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table File {
+  id String [pk]
+  slug String [unique, not null]
+  name String [not null]
+  type String [not null]
+  link String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  Mood Mood [not null]
+  Dialog Dialog [not null]
+}
+
+Ref: User.genderId > Gender.id
+
+Ref: User.timezoneId > Timezone.id
+
+Ref: Session.userId > User.id
+
+Ref: Dialog.sessionId > Session.id
+
+Ref: Dialog.symbolId > File.id
+
+Ref: Mood.symbolId > File.id
+
+Ref: MoodRecord.sessionId > Session.id
+
+Ref: MoodRecord.moodId > Mood.id

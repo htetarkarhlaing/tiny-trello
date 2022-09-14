@@ -7,11 +7,11 @@ generator client {
 }
 
 generator dbml {
-  provider = "prisma-dbml-generator"
-  outputName = "tiny-trello.dbml"
-  projectName = "Tiny Trello"
+  provider            = "prisma-dbml-generator"
+  outputName          = "tiny-trello.dbml"
+  projectName         = "Tiny Trello"
   projectDatabaseType = "mongodb"
-  projectNote = "This is my next level 10 days challenge LOL"
+  projectNote         = "This is my next level 10 days challenge LOL"
 }
 
 datasource db {
@@ -19,8 +19,104 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model List {
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName   String
+  lastName    String
+  username    String
+  email       String
+  phone       String
+  password    String
+  dateOfBirth DateTime
+  token       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+
+  Gender     Gender?   @relation(fields: [genderId], references: [id])
+  genderId   String?
+  Timezone   Timezone? @relation(fields: [timezoneId], references: [id])
+  timezoneId String?
+
+  Session Session[]
+}
+
+model Gender {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  value       String
+  Description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+
+  User User[]
+}
+
+model Timezone {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  timezone  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  User User[]
+}
+
+model Session {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  Dialog     Dialog[]
+  MoodRecord MoodRecord[]
+}
+
+model Dialog {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
+
+  Session   Session   @relation(fields: [sessionId], references: [id])
+  sessionId String
+  Symbol    File?     @relation(fields: [symbolId], references: [id])
+  symbolId  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Mood {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  Symbol      File?    @relation(fields: [symbolId], references: [id])
+  symbolId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  MoodRecord MoodRecord[]
+}
+
+model MoodRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  Session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId String
+  Mood      Mood     @relation(fields: [moodId], references: [id])
+  moodId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model File {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug      String   @unique
+  name      String
+  type      String
+  link      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  Mood   Mood[]
+  Dialog Dialog[]
 }
